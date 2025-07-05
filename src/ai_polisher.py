@@ -8,12 +8,12 @@ load_dotenv()
 
 client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
 
-def polish_work_entry(entry: str) -> Dict[str, str]:
+async def polish_work_entry(entry: str) -> Dict[str, str]:
     with open("src/prompts/polisher_prompt.txt", "r") as f:
         system_prompt = f.read()
 
     try:
-        response = client.chat.completions.create(
+        response = await client.chat.completions.create(
             model="gpt-4o-mini",
             messages=[
                 {"role": "system", "content": system_prompt},

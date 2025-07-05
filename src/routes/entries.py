@@ -6,6 +6,7 @@ from database.schemas import WorkEntryCreate, WorkEntryPublicResponse
 from database.crud import create_work_entry, get_daily_entries, get_remaining_quota
 from utils import authenticate_and_get_user_id
 from datetime import datetime
+from ai_polisher import polish_work_entry
 
 router = APIRouter()
 
@@ -18,15 +19,16 @@ def get_db(): #dependency to get db session, the yield is used to return the db 
 
 
 @router.post("/entry", response_model=WorkEntryPublicResponse)
-def submit_entry(request: Request, data: WorkEntryCreate, db: Session = Depends(get_db)):
+async def submit_entry(request: Request, data: WorkEntryCreate, db: Session = Depends(get_db)):
     user = authenticate_and_get_user_id(request)
     quota = get_remaining_quota(db, user["user_id"])
     
     if quota.quota_remaining <= 0:
         raise HTTPException(status_code=403, detail="Daily quota exceeded")
 
-    # For now, polished_output is a placeholder (AI logic is in polish route)
-    new_entry = create_work_entry(db, user["user_id"], data.entry, polished_output="")
+    polished_result = await polish_work_entry(data.entry)
+
+    new_entry = create_work_entry(db, user["user_id"], data.entry, polished_output=polished_result.get("polished_output"))
 
     # Update quota
     quota.quota_remaining -= 1
