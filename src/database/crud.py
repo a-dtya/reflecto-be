@@ -10,7 +10,7 @@ def create_work_entry(db: Session, user_id: str, entry: str, polished_output: st
         user_id=user_id,
         entry=entry,
         polished_output=polished_output,
-        created_at=datetime.utcnow()
+        created_at=datetime.now()
     )
     db.add(new_entry)
     db.commit()
