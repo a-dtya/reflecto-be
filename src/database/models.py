@@ -15,3 +15,12 @@ class WorkEntry(Base):
     created_at = Column(DateTime, default=datetime.utcnow)
     
 
+class DailyQuota(Base):
+    __tablename__ = "daily_quotas"
+
+    id = Column(Integer, primary_key=True, index=True)
+    user_id = Column(String, index=True, nullable=False)
+    date = Column(DateTime, nullable=False, index=True)
+    quota_used = Column(Integer, default=0)
+    quota_limit = Column(Integer, default=3)  # or whatever your daily limit is
+    last_reset = Column(DateTime, default=datetime.utcnow)
