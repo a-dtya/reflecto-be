@@ -4,7 +4,7 @@ from ai_polisher import polish_work_entry
 
 router = APIRouter()
 
-@router.post("/polish")
+@router.post("/generate")
 async def polish_entry(payload: WorkEntryCreate):
     try:
         result = await polish_work_entry(payload.entry)

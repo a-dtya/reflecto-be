@@ -37,7 +37,7 @@ async def submit_entry(request: Request, data: WorkEntryCreate, db: Session = De
     return WorkEntryPublicResponse.model_validate(new_entry)
 
 
-@router.get("/entries", response_model=list[WorkEntryPublicResponse])
+@router.get("/", response_model=list[WorkEntryPublicResponse])
 def get_today_entries(request: Request, db: Session = Depends(get_db)):
     user = authenticate_and_get_user_id(request)
     today = datetime.now()
